@@ -1,70 +1,123 @@
-import sqlite3
-from database.set_up import create_table_cmd, insert_table_cmd
+import datetime
+import logging
+import time
+import uuid
+from time import strftime
+from datetime import datetime
+
+user_db = {}
+session_map = {}
 
 
-def connect_sqlite_db(db_file):
-    conn = None
-    try:
-        conn = sqlite3.connect(db_file)
-        print(f'Successfully connected to SQLite db version: {sqlite3.version}')
-    except sqlite3.Error as e:
-        print(f'Failed to connect with error: {e}')
-    finally:
-        if conn:
-            c = conn.cursor()
-            c.close()
-            return conn
+def set_up_log(filename=None):
+    if filename is None:
+        filename = 'server-log-' + str(round(time.time())) + '.log'
+
+    logging.basicConfig(filename='log/' + filename, encoding='utf-8', level=logging.DEBUG)
+    logging.info(f'Server setup time: {datetime.now()}')
 
 
-def set_up_sqlite_db(conn):
-    try:
-        cur = conn.cursor()
-        cur.executescript(create_table_cmd)
+def register_user(new_id, new_pass):
+    new_id = str(new_id)
+    new_pass = str(new_pass)
 
-        print(f'Successfully creating table.')
-        cur.close()
-    except sqlite3.Error as e:
-        print(f'Error creating table: f{e}')
+    if new_id in user_db.keys():
 
+        if user_db[new_id]['password'] == new_pass:
+            new_session_id = str(uuid.uuid4())
+            session_map[new_session_id] = new_id
+            user_db[new_id]['session'].append(new_session_id)
 
-def insert_sqlite_db(conn, id, password, value=1):
+            logging.info(f'USER_ID: {new_id} SESSION_ID {new_session_id} VALUE: {user_db[new_id]["value"]} MESSAGE: New session created. {datetime.now()}')
+            return 200, 'New session created.', new_session_id
 
-    try:
-        cur = conn.cursor()
-        cur.execute(insert_table_cmd.format(id, password, value))
-        conn.commit()
+        return 300, 'Incorrect password', None
 
-        print(f'Successfully inserting table.')
-        cur.close()
+    new_session_id = str(uuid.uuid4())
+    session_map[new_session_id] = new_id
+    user_db[new_id] = {'password': new_pass, 'value': 1, 'session': [new_session_id]}
 
-    except sqlite3.Error as e:
-        print(f'Error inserting table: f{e}')
-
-
-def set_up():
-    conn = connect_sqlite_db('database/server.db')
-    set_up_sqlite_db(conn)
-    insert_sqlite_db(conn, 1, "test_pass")
+    logging.info(f'USER_ID: {new_id} SESSION_ID {new_session_id} VALUE: {user_db[new_id]["value"]} MESSAGE: New user registered. {datetime.now()}')
+    return 200, 'New user registered.', new_session_id
 
 
-# TODO: User provide id/pass
-#  -> check if id already exist -
-#       -> if yes check if pass is correct
-#           -> if yes allow in and return 'auth_token'
-#           -> if no reject with error "password incorrect"
-#       -> if no create new user with password -> return 'auth_token'
-def login(id, password):
-    pass
+def logout_user(session_id):
+    if session_id in session_map:
+        user_id = session_map[session_id]
+
+        if session_id in user_db[user_id]['session']:
+
+            user_db[user_id]['session'].remove(session_id)
+            session_map.pop(session_id)
+
+            if len(user_db[user_id]['session']) <= 0:
+                user_db.pop(user_id)
+
+                logging.info(f'USER_ID: {user_id} SESSION_ID {session_id} MESSAGE: Session logout - user destroyed. {datetime.now()}')
+                return 200, 'Session logout - user destroyed.'
+
+            logging.info(f'USER_ID: {user_id} SESSION_ID {session_id} MESSAGE: Session logout - user still online. {datetime.now()}')
+            return 200, 'Session logout - user still online.'
+
+        return 300, 'Session do not exist 2.'
+
+    return 300, 'Session do not exist.'
 
 
-def set_value(auth_token, value):
-    pass
+def increase_value(session_id, by):
+    if session_id in session_map:
+        user_id = session_map[session_id]
+
+        if session_id in user_db[user_id]['session']:
+
+            if str(by).isnumeric():
+                user_db[user_id]['value'] += by
+
+                logging.info(f'USER_ID: {user_id} SESSION_ID {session_id} VALUE: {user_db[user_id]["value"]} MESSAGE: Increase value by: {by}. {datetime.now()}')
+                return 200, f'Set new value {user_db[user_id]["value"]}'
+
+            print('Value provided not a number.')
+            return 300, 'Value provided not a number.'
+        print('Session do not exist 2.')
+        return 300, 'Session do not exist 2.'
+    print('Session do not exist.')
+    return 300, 'Session do not exist.'
 
 
-def logout(auth_token):
-    pass
+def decrease_value(session_id, by):
+    if session_id in session_map:
+        user_id = session_map[session_id]
+
+        if session_id in user_db[user_id]['session']:
+
+            if str(by).isnumeric():
+                user_db[user_id]['value'] -= by
+
+                logging.info(f'USER_ID: {user_id} SESSION_ID {session_id} VALUE: {user_db[user_id]["value"]} MESSAGE: Decrease value by: {by}. {datetime.now()}')
+                return 200, f'Set new value {user_db[user_id]["value"]}'
+
+            print('Value provided not a number.')
+            return 300, 'Value provided not a number.'
+        print('Session do not exist 2.')
+        return 300, 'Session do not exist 2.'
+    print('Session do not exist.')
+    return 300, 'Session do not exist.'
 
 
 if __name__ == '__main__':
-    set_up()
+    set_up_log()
+
+    _, _, auth_1 = register_user(1, 'pass1')
+    _, _, auth_2 = register_user(1, 'pass2')
+    _, _, auth_3 = register_user(1, 'pass1')
+
+    increase_value(auth_1, 56)
+    decrease_value(auth_3, 96)
+
+    logout_user(auth_1)
+    logout_user(auth_1)
+    logout_user(auth_3)
+    logout_user(auth_3)
+
+
 
