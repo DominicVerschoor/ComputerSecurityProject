@@ -27,7 +27,7 @@ def register_user(new_id, new_pass):
             new_session_id = str(uuid.uuid4())
             session_map[new_session_id] = new_id
             user_db[new_id]['session'].append(new_session_id)
-
+            
             logging.info(f'USER_ID: {new_id} SESSION_ID {new_session_id} VALUE: {user_db[new_id]["value"]} MESSAGE: New session created. {datetime.now()}')
             return 200, 'New session created.', new_session_id
 
@@ -118,6 +118,4 @@ if __name__ == '__main__':
     logout_user(auth_1)
     logout_user(auth_3)
     logout_user(auth_3)
-
-
 
