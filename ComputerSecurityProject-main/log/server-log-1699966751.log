@@ -1,0 +1,36 @@
+INFO:root:Server setup time: 2023-11-14 13:59:11.491862
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+INFO:werkzeug:127.0.0.1 - - [14/Nov/2023 14:08:02] "GET / HTTP/1.1" 200 -
+INFO:root:USER_ID: 1001 SESSION_ID d1f8e3c4-ea5b-4e6e-ae02-36d47ace5500 VALUE: 1 MESSAGE: New user registered. 2023-11-14 14:08:02.530115
+INFO:werkzeug:127.0.0.1 - - [14/Nov/2023 14:08:02] "POST /register HTTP/1.1" 200 -
+INFO:root:USER_ID: 1001 SESSION_ID d1f8e3c4-ea5b-4e6e-ae02-36d47ace5500 VALUE: 6.0 MESSAGE: Increase value by: 5. 2023-11-14 14:08:02.537683
+INFO:werkzeug:127.0.0.1 - - [14/Nov/2023 14:08:02] "POST /increase HTTP/1.1" 200 -
+INFO:root:USER_ID: 1001 SESSION_ID d1f8e3c4-ea5b-4e6e-ae02-36d47ace5500 VALUE: 14.0 MESSAGE: Increase value by: 8. 2023-11-14 14:08:05.542782
+INFO:werkzeug:127.0.0.1 - - [14/Nov/2023 14:08:05] "POST /increase HTTP/1.1" 200 -
+INFO:root:USER_ID: 1001 SESSION_ID d1f8e3c4-ea5b-4e6e-ae02-36d47ace5500 VALUE: 4.0 MESSAGE: Decrease value by: 10. 2023-11-14 14:08:08.552218
+INFO:werkzeug:127.0.0.1 - - [14/Nov/2023 14:08:08] "POST /decrease HTTP/1.1" 200 -
+INFO:root:USER_ID: 1001 SESSION_ID d1f8e3c4-ea5b-4e6e-ae02-36d47ace5500 VALUE: -7.0 MESSAGE: Decrease value by: 11. 2023-11-14 14:08:11.556934
+INFO:werkzeug:127.0.0.1 - - [14/Nov/2023 14:08:11] "POST /decrease HTTP/1.1" 200 -
+INFO:root:USER_ID: 1001 SESSION_ID d1f8e3c4-ea5b-4e6e-ae02-36d47ace5500 VALUE: -6.0 MESSAGE: Increase value by: 1. 2023-11-14 14:08:14.578012
+INFO:werkzeug:127.0.0.1 - - [14/Nov/2023 14:08:14] "POST /increase HTTP/1.1" 200 -
+INFO:root:USER_ID: 1001 SESSION_ID d1f8e3c4-ea5b-4e6e-ae02-36d47ace5500 MESSAGE: Session logout - user destroyed. 2023-11-14 14:08:17.592803
+INFO:werkzeug:127.0.0.1 - - [14/Nov/2023 14:08:17] "POST /logout HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [14/Nov/2023 14:08:17] "GET /check HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [14/Nov/2023 14:38:12] "GET / HTTP/1.1" 200 -
+INFO:root:USER_ID: 1001 SESSION_ID 78f570b6-118c-422a-9404-0d1a5d8ce82f VALUE: 1 MESSAGE: New user registered. 2023-11-14 14:38:12.509055
+INFO:werkzeug:127.0.0.1 - - [14/Nov/2023 14:38:12] "POST /register HTTP/1.1" 200 -
+INFO:root:USER_ID: 1001 SESSION_ID 78f570b6-118c-422a-9404-0d1a5d8ce82f VALUE: 6.0 MESSAGE: Increase value by: 5. 2023-11-14 14:38:12.513833
+INFO:werkzeug:127.0.0.1 - - [14/Nov/2023 14:38:12] "POST /increase HTTP/1.1" 200 -
+INFO:root:USER_ID: 1001 SESSION_ID 78f570b6-118c-422a-9404-0d1a5d8ce82f VALUE: 14.0 MESSAGE: Increase value by: 8. 2023-11-14 14:38:15.520393
+INFO:werkzeug:127.0.0.1 - - [14/Nov/2023 14:38:15] "POST /increase HTTP/1.1" 200 -
+INFO:root:USER_ID: 1001 SESSION_ID 78f570b6-118c-422a-9404-0d1a5d8ce82f VALUE: 4.0 MESSAGE: Decrease value by: 10. 2023-11-14 14:38:18.527852
+INFO:werkzeug:127.0.0.1 - - [14/Nov/2023 14:38:18] "POST /decrease HTTP/1.1" 200 -
+INFO:root:USER_ID: 1001 SESSION_ID 78f570b6-118c-422a-9404-0d1a5d8ce82f VALUE: -7.0 MESSAGE: Decrease value by: 11. 2023-11-14 14:38:21.537955
+INFO:werkzeug:127.0.0.1 - - [14/Nov/2023 14:38:21] "POST /decrease HTTP/1.1" 200 -
+INFO:root:USER_ID: 1001 SESSION_ID 78f570b6-118c-422a-9404-0d1a5d8ce82f VALUE: -6.0 MESSAGE: Increase value by: 1. 2023-11-14 14:38:24.545710
+INFO:werkzeug:127.0.0.1 - - [14/Nov/2023 14:38:24] "POST /increase HTTP/1.1" 200 -
+INFO:root:USER_ID: 1001 SESSION_ID 78f570b6-118c-422a-9404-0d1a5d8ce82f MESSAGE: Session logout - user destroyed. 2023-11-14 14:38:27.551751
+INFO:werkzeug:127.0.0.1 - - [14/Nov/2023 14:38:27] "POST /logout HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [14/Nov/2023 14:38:27] "GET /check HTTP/1.1" 200 -
