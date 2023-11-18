@@ -4,7 +4,6 @@ from flask import Flask, request, Response
 
 from server_main import ServerSide
 
-# instance of flask application
 app = Flask(__name__)
 server = ServerSide()
 

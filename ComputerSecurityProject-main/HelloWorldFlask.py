@@ -2,26 +2,29 @@
 from flask import Flask, request, jsonify, render_template, redirect, url_for
 import server_main as server
 
+from flask import Flask, request, jsonify, session
+import server_main as server
+
 user_db = {}
 session_map = {}
 
-# instance of flask application
 app = Flask(__name__)
 
-# home route that returns below text when root url is accessed
 @app.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
-    client_id = data.get('client_id')
-    password = data.get('password')
+    client_id, password = data.get('client_id'), data.get('password')
 
+    # Generate a secure session ID
+    session['session_id'] = secrets.token_urlsafe(16)
+    # Register user with a secure session ID
     status, message, session_id = server.register_user(client_id, password)
 
     if status == 200:
         return jsonify({'status': status, 'message': message, 'session_id': session_id})
     else:
         return jsonify({'status': status, 'error': message})
-
+    
 if __name__ == '__main__':
       app.run(debug=True)
       # server.set_up_log()
