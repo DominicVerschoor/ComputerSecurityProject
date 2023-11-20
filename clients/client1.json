@@ -2,7 +2,7 @@
   "id": "1001",
   "password" : "akl12365",
   "server" : {
-    "ip" : "http://127.0.0.1",
+    "ip" : "https://127.0.0.1",
     "port" : "5000"
   } ,
   "actions" : {

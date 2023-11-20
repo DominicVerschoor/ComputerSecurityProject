@@ -4,6 +4,8 @@ import time
 import uuid
 from datetime import datetime
 
+import bcrypt
+
 
 class ServerSide:
 
@@ -21,11 +23,14 @@ class ServerSide:
 
     def register_user(self, new_id, new_pass):
         new_id = str(new_id)
-        new_pass = str(new_pass)
+        if not isinstance(new_pass, (bytes, bytearray)):
+            new_pass = new_pass.encode('utf-8')
+
+        hash_new_pass = bcrypt.hashpw(new_pass, bcrypt.gensalt())
 
         if new_id in self.user_db.keys():
 
-            if self.user_db[new_id]['password'] == new_pass:
+            if bcrypt.checkpw(new_pass, self.user_db[new_id]['password']):
                 new_session_id = str(uuid.uuid4())
                 self.session_map[new_session_id] = new_id
                 self.user_db[new_id]['session'].append(new_session_id)
@@ -38,7 +43,7 @@ class ServerSide:
 
         new_session_id = str(uuid.uuid4())
         self.session_map[new_session_id] = new_id
-        self.user_db[new_id] = {'password': new_pass, 'value': 1, 'session': [new_session_id]}
+        self.user_db[new_id] = {'password': hash_new_pass, 'value': 1, 'session': [new_session_id]}
 
         logging.info(
             f'USER_ID: {new_id} SESSION_ID {new_session_id} VALUE: {self.user_db[new_id]["value"]} MESSAGE: New user registered. {datetime.now()}')
@@ -98,7 +103,7 @@ class ServerSide:
                     self.user_db[user_id]['value'] -= float(by)
 
                     logging.info(
-                        f'USER_ID: {user_id} SESSION_ID {session_id} VALUE: {self.user_db[user_id]["value"]} MESSAGE: Decrease value by: {by}. {datetime.now()}')
+                        f'USER_ID: {user_id} VALUE: {self.user_db[user_id]["value"]} MESSAGE: Decrease value by: {by}. {datetime.now()}')
                     return 200, f'Set new value {self.user_db[user_id]["value"]}'
 
                 print('Value provided not a number.')
@@ -115,7 +120,6 @@ class ServerSide:
 if __name__ == '__main__':
 
     server = ServerSide()
-    print(server.get_server_data())
 
     _, _, auth_1 = server.register_user(1, 'pass1')
     _, _, auth_2 = server.register_user(1, 'pass2')

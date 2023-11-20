@@ -68,4 +68,4 @@ def check_server_data():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(ssl_context=('server_main.crt', 'server_main.key'), debug=False)
