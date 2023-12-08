@@ -8,12 +8,11 @@ import requests
 policy = PasswordPolicy.from_names(
     length=10,
     uppercase=1,
-    lowercase=1,
     special=1,
     nonletters=1,
-    entropybits=30,
-    strengthbits=0.6,
+    entropybits=30
 )
+
 
 def start_client(client_data, client_salt):
     # Get server url
@@ -21,16 +20,18 @@ def start_client(client_data, client_salt):
     body = {}
 
     # Test connection
-    resp_test = requests.get(url, json=body, verify=True)
+    resp_test = requests.get(url, json=body, verify=False)
     print(resp_test.text)
 
     # Register user
     if validate_password_input(client_data['password']):
         local_hashed_password = bcrypt.hashpw(client_data['password'].encode('utf-8'), client_salt)
         data = {'user_id': client_data['id'], 'password': str(local_hashed_password)}
+        resp_register = requests.post(url + '/register', json=data, verify=False).json()
+        print(resp_register)
 
-    resp_register = requests.post(url + '/register', json=data, verify=False).json()
-    print(resp_register)
+    else:
+        return None
 
     # Execute actions with delay
     action_delay = int(client_data['actions']['delay'])

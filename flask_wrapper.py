@@ -1,6 +1,8 @@
 import json
 
 from flask import Flask, request, Response
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 from server_main import ServerSide
 
@@ -8,13 +10,18 @@ from server_main import ServerSide
 app = Flask(__name__)
 server = ServerSide()
 
+limiter = Limiter(get_remote_address, app=app)
+
+
 
 @app.route('/')
+@limiter.limit("10/minute")
 def hello_world():
     return '<p>Hello world, serve is live!</p>'
 
 
 @app.route('/register', methods=['POST', 'GET'])
+@limiter.limit("10/minute")
 def register_user_api():
     if request.method == 'POST':
         post_data = request.get_json()
@@ -27,6 +34,7 @@ def register_user_api():
 
 
 @app.route('/logout', methods=['POST', 'GET'])
+@limiter.limit("10/minute")
 def logout_user_api():
     if request.method == 'POST':
         post_data = request.get_json()
@@ -39,6 +47,7 @@ def logout_user_api():
 
 
 @app.route('/increase', methods=['POST', 'GET'])
+@limiter.limit("20/minute")
 def increase_value_api():
     if request.method == 'POST':
         post_data = request.get_json()
@@ -50,6 +59,7 @@ def increase_value_api():
 
 
 @app.route('/decrease', methods=['POST', 'GET'])
+@limiter.limit("20/minute")
 def decrease_value_api():
     if request.method == 'POST':
         post_data = request.get_json()
@@ -61,6 +71,7 @@ def decrease_value_api():
 
 
 @app.route('/check', methods=['GET'])
+@limiter.limit("10/minute")
 def check_server_data():
     if request.method == 'GET':
         log_name = server.get_server_log()
