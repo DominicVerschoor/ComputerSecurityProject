@@ -52,24 +52,30 @@ class ServerSide:
 
             if bcrypt.checkpw(new_pass, self.user_db[new_id]['password']):
                 new_session_id = str(uuid.uuid4())
-                self.session_map[new_session_id] = new_id
-                self.user_db[new_id]['session'].append(new_session_id)
+                # hash_session_id = new_session_id
+                hash_session_id = str(bcrypt.hashpw(new_session_id.encode('utf-8'), bcrypt.gensalt()))
+
+                self.session_map[hash_session_id] = new_id
+                self.user_db[new_id]['session'].append(hash_session_id)
 
                 logging.info(
-                    f'USER_ID: {new_id} SESSION_ID {new_session_id} VALUE: {self.user_db[new_id]["value"]} MESSAGE: New session created. {datetime.now()}')
-                return 200, 'New session created.', new_session_id
+                    f'USER_ID: {new_id} SESSION_ID {list(self.session_map.keys()).index(hash_session_id)} VALUE: {self.user_db[new_id]["value"]} MESSAGE: New session created. {datetime.now()}')
+                return 200, 'New session created.', hash_session_id
 
             return 300, 'Incorrect password or ID', None
 
         new_session_id = str(uuid.uuid4())
-        self.session_map[new_session_id] = new_id
-        self.user_db[new_id] = {'password': hash_new_pass, 'value': 1, 'session': [new_session_id]}
+        # hash_session_id = new_session_id
+        hash_session_id = str(bcrypt.hashpw(new_session_id.encode('utf-8'), bcrypt.gensalt()))
+
+        self.session_map[hash_session_id] = new_id
+        self.user_db[new_id] = {'password': hash_new_pass, 'value': 1, 'session': [hash_session_id]}
 
         logging.info(
-            f'USER_ID: {new_id} SESSION_ID {new_session_id} VALUE: {self.user_db[new_id]["value"]} MESSAGE: New user registered. {datetime.now()}')
-        return 200, 'New user registered.', new_session_id
+            f'USER_ID: {new_id} SESSION_ID {list(self.session_map.keys()).index(hash_session_id)} VALUE: {self.user_db[new_id]["value"]} MESSAGE: New user registered. {datetime.now()}')
+        return 200, 'New user registered.', hash_session_id
 
-    def logout_user(self, session_id):  # TODO: Input validation 1. length, 2. characters, 3. type
+    def logout_user(self, session_id):
         if session_id in self.session_map.keys():
             user_id = self.session_map[session_id]
 
