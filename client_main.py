@@ -5,6 +5,11 @@ from time import sleep
 import bcrypt
 import requests
 
+from urllib3.exceptions import InsecureRequestWarning
+
+# suppress InsecureRequestWarning
+requests.urllib3.disable_warnings(InsecureRequestWarning)
+
 policy = PasswordPolicy.from_names(
     length=10,
     uppercase=1,
@@ -28,7 +33,9 @@ def start_client(client_data, client_salt):
         local_hashed_password = bcrypt.hashpw(client_data['password'].encode('utf-8'), client_salt)
         data = {'user_id': client_data['id'], 'password': str(local_hashed_password)}
         resp_register = requests.post(url + '/register', json=data, verify=False).json()
-        print(resp_register)
+        #print(resp_register)
+        print('New user registered.')
+
 
     else:
         return None
@@ -54,7 +61,8 @@ def start_client(client_data, client_salt):
     # Logout user
     data = {'session_id': resp_register['session_id']}
     resp_logout = requests.post(url + '/logout', json=data, verify=False).json()
-    print(resp_logout)
+    #print(resp_logout)
+    print('Session logout - user destroyed.')
 
     # Check log file
     resp_check = requests.get(url + '/check', verify=False).json()
